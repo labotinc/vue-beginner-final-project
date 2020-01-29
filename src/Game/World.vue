@@ -19,11 +19,18 @@ export default {
   height: 100vh;
   position: relative;
 
+  & > * {
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+  }
+
   .world-background-bg {
     height: 100vh;
     width: 100%;
     position: absolute;
-    background: url("../assets/world/woods-bg.png") no-repeat center center fixed;
+    background: url("../assets/world/woods-bg.png") no-repeat center center
+      fixed;
     background-size: cover;
     z-index: 10;
   }
@@ -32,7 +39,8 @@ export default {
     height: 100vh;
     width: 100%;
     position: absolute;
-    background: url("../assets/world/woods-far-trees.png") no-repeat center center fixed;
+    background: url("../assets/world/woods-far-trees.png") no-repeat center
+      center fixed;
     background-size: cover;
     z-index: 20;
   }
@@ -41,7 +49,8 @@ export default {
     height: 100vh;
     width: 100%;
     position: absolute;
-    background: url("../assets/world/woods-mid-trees.png") no-repeat center center fixed;
+    background: url("../assets/world/woods-mid-trees.png") no-repeat center
+      center fixed;
     background-size: cover;
     z-index: 30;
   }
@@ -50,7 +59,8 @@ export default {
     height: 100vh;
     width: 100%;
     position: absolute;
-    background: url("../assets/world/woods-close-trees.png") no-repeat center center fixed;
+    background: url("../assets/world/woods-close-trees.png") no-repeat center
+      center fixed;
     background-size: cover;
     z-index: 40;
   }
