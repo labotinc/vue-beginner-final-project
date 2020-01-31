@@ -1,26 +1,79 @@
 <template>
   <div class="app-game">
     <app-world></app-world>
-    <app-warrior></app-warrior>
-    <app-ui></app-ui>
-    <div id="monster"></div>
+    <app-warrior
+      :windowWidth="windowWidth"
+      :actions="state"
+      :AABB="AABB"
+      :currentTurn="currentTurn"
+      :wasHit="state.warrior.wasHit"
+      :isDead="state.warrior.hp <= 0"
+      @warrior-light-attack="state.warrior.isLightAttacking = false"
+      @warrior-position-x="state.warrior.position.x = $event"
+      @monster-was-hit="damageMonster($event)"
+      @finished-turn="currentTurn = $event"
+      @monster-can-attack="monsterCanAttack = $event"
+      @warrior-hit="state.warrior.wasHit = false"
+    ></app-warrior>
+
+    <app-monster
+      :windowWidth="windowWidth"
+      :actions="state"
+      :AABB="AABB"
+      :currentTurn="currentTurn"
+      :monsterCanAttack="monsterCanAttack"
+      :wasHit="state.monster.wasHit"
+      :isDead="state.monster.hp <= 0"
+      @monster-light-attack="monsterCanAttack = false"
+      @warrior-was-hit="damageWarrior($event)"
+      @finished-turn="currentTurn = $event"
+      @monster-position-x="state.monster.position.x = $event"
+      @monster-hit="state.monster.wasHit = false"
+    ></app-monster>
+    <app-ui
+      :currentTurn="currentTurn"
+      @warrior-light-attack="state.warrior.isLightAttacking = $event"
+    ></app-ui>
   </div>
 </template>
 
 <script>
 import World from "./World";
 import Warrior from "./Warrior";
+import Monster from "./Monster";
 import UserInterface from "./UserInterface";
 export default {
   name: "game",
   components: {
     "app-world": World,
     "app-warrior": Warrior,
+    "app-monster": Monster,
     "app-ui": UserInterface
   },
-  mounted() {
-    const m = document.getElementById("monster");
-    console.log(this.getPosition(m));
+  data() {
+    return {
+      windowWidth: window.innerWidth,
+      currentTurn: "warrior",
+      monsterCanAttack: false,
+      state: {
+        warrior: {
+          hp: 100,
+          isLightAttacking: false,
+          wasHit: false,
+          position: {
+            x: 0
+          }
+        },
+        monster: {
+          hp: 100,
+          isLightAttacking: false,
+          wasHit: false,
+          position: {
+            x: 0
+          }
+        }
+      }
+    };
   },
   methods: {
     getPosition(element) {
@@ -30,8 +83,26 @@ export default {
         top: rect.top + window.scrollX
       };
     },
-    captureClick(e) {
-      console.log(e);
+    damageMonster(damage) {
+      this.state.monster.wasHit = true;
+      this.state.monster.hp -= damage;
+    },
+    damageWarrior(damage) {
+      this.state.warrior.wasHit = true;
+      this.state.warrior.hp -= damage;
+    },
+    AABB() {
+      const warrior = document.getElementById("warrior");
+      const monster = document.getElementById("monster");
+      const rect1 = warrior.getBoundingClientRect();
+      const rect2 = monster.getBoundingClientRect();
+
+      return (
+        rect1.left < rect2.left + rect2.width &&
+        rect1.left + rect1.width > rect2.left &&
+        rect1.top < rect2.top + rect2.height &&
+        rect1.top + rect1.height > rect2.top
+      );
     }
   }
 };
@@ -45,15 +116,5 @@ $light-red: #da5d53;
   width: 100%;
   height: 100vh;
   position: relative;
-}
-
-#monster {
-  background-color: white;
-  width: 85px;
-  height: 100px;
-  position: absolute;
-  top: 72%;
-  left: 62%;
-  z-index: 30;
 }
 </style>
