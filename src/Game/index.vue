@@ -32,6 +32,8 @@
     ></app-monster>
     <app-ui
       :currentTurn="currentTurn"
+      :hp="state.warrior.hp"
+      @warrior-healing="healWarrior"
       @warrior-light-attack="state.warrior.isLightAttacking = $event"
     ></app-ui>
   </div>
@@ -86,10 +88,18 @@ export default {
     damageMonster(damage) {
       this.state.monster.wasHit = true;
       this.state.monster.hp -= damage;
+
+      if (this.state.monster.hp < 0) {
+        this.state.monster.hp = 0;
+      }
     },
     damageWarrior(damage) {
       this.state.warrior.wasHit = true;
       this.state.warrior.hp -= damage;
+
+      if (this.state.warrior.hp < 0) {
+        this.state.warrior.hp = 0;
+      }
     },
     AABB() {
       const warrior = document.getElementById("warrior");
@@ -103,6 +113,18 @@ export default {
         rect1.top < rect2.top + rect2.height &&
         rect1.top + rect1.height > rect2.top
       );
+    },
+    healWarrior() {
+      if (this.state.warrior.hp < 100) {
+        this.state.warrior.hp += 40;
+      }
+
+      if (this.state.warrior.hp >= 100) {
+        this.state.warrior.hp = 100;
+      }
+
+      this.currentTurn = "monster";
+      this.monsterCanAttack = true;
     }
   }
 };

@@ -2,11 +2,14 @@
   <div class="app-ui">
     <h1 class="current-turn">Current Turn: {{ currentTurn }}</h1>
     <h2 class="not-your-turn" v-show="!canDoAction">Wait for your turn!</h2>
+    <h2 class="not-your-turn" v-show="showChooseDifferenct">
+      Choose a different Action!
+    </h2>
     <div class="ui-action-btns">
       <button class="ui-attack-btn" @click="lightAttack">
         ATTACK
       </button>
-      <button class="ui-heal-btn">HEAL</button>
+      <button class="ui-heal-btn" @click="heal">HEAL</button>
     </div>
   </div>
 </template>
@@ -14,16 +17,27 @@
 <script>
 export default {
   name: "interface",
-  props: ["currentTurn"],
+  props: ["currentTurn", "hp"],
   data() {
     return {
-      canDoAction: true
+      canDoAction: true,
+      showChooseDifferenct: false
     };
   },
   methods: {
     lightAttack() {
-      if (this.currentTurn === "warrior") {
+      this.showChooseDifferenct = false;
+      if (this.currentTurn === "warrior" && this.hp > 0) {
         this.$emit("warrior-light-attack", true);
+      } else {
+        this.showNotYourTurn();
+      }
+    },
+    heal() {
+      if (this.currentTurn === "warrior" && this.hp < 100 && this.hp > 0) {
+        this.$emit("warrior-healing");
+      } else if (this.hp === 100) {
+        this.showChooseDifferenct = true;
       } else {
         this.showNotYourTurn();
       }

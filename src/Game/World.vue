@@ -41,7 +41,7 @@ export default {
     background: url("../assets/world/woods-far-trees.png") center center fixed;
     background-size: cover;
     z-index: 20;
-    /* animation: far-trees 1000s infinite; */
+    animation: far-trees 4000s infinite;
   }
 
   .world-background-mid-trees {
@@ -61,8 +61,8 @@ export default {
     background-position-x: 155px;
     background-size: cover;
     z-index: 50;
-    opacity: 0.9;
-    /* animation: close-trees 2000s infinite; */
+    opacity: 0.8;
+    animation: close-trees 4000s infinite;
 
 
     @media (min-width: 1360px) {

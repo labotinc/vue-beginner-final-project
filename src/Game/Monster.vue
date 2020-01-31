@@ -39,7 +39,7 @@ export default {
       monster: {
         stats: {
           hp: this.actions.monster.hp,
-          attackDamage: 100
+          attackDamage: 30
         },
         states: {
           isIdle: true,

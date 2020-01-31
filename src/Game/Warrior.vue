@@ -30,7 +30,7 @@ export default {
       collided: false,
       warrior: {
         stats: {
-          attackDamage: 100
+          attackDamage: 10
         },
         states: {
           isIdle: true,
