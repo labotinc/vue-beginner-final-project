@@ -4,11 +4,9 @@
     <h2 class="not-your-turn" v-show="!canDoAction">Wait for your turn!</h2>
     <div class="ui-action-btns">
       <button class="ui-attack-btn" @click="lightAttack">
-        ATTACK 1
+        ATTACK
       </button>
-      <button class="ui-attack2-btn">ATTACK 2</button>
       <button class="ui-heal-btn">HEAL</button>
-      <button class="ui-evade-btn">EVADE</button>
     </div>
   </div>
 </template>
@@ -77,7 +75,7 @@ $light-red: #da5d53;
   bottom: 2%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 500px;
+  width: 250px;
   background-color: rgba(0, 0, 0, 0.4);
   padding: 15px;
   display: flex;
