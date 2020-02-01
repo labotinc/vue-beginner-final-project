@@ -31,7 +31,8 @@ export default {
     "monsterCanAttack",
     "AABB",
     "wasHit",
-    "isDead"
+    "isDead",
+    "resetGame"
   ],
   data() {
     return {
@@ -66,6 +67,16 @@ export default {
       handler(newWidth, oldWidth) {
         if (newWidth !== oldWidth) {
           this.calculatePosition(newWidth);
+        }
+      }
+    },
+    resetGame: {
+      immediate: true,
+      handler(r) {
+        if (r) {
+          this.reset();
+          this.monster.states.isIdle = true;
+          this.$emit("game-was-reset");
         }
       }
     }
@@ -177,43 +188,35 @@ export default {
       if (walkDistance > 0) {
         this.monster.states.isIdle = false;
         await this.timeout(TICK);
-        this.monster.states.isWalking = true;
-        await this.timeout(TICK);
+        this.monster.transition = "none";
+        this.monster.states.isWalking = false;
+        this.monster.states.isRunning = true;
         this.monster.transition = ".1s linear";
-        const finishedWalk = await this.moveMonster(0.5, walkDistance * 2 - 2);
+        const finishedRun = await this.moveWithAABB(3);
 
-        if (finishedWalk) {
+        if (finishedRun) {
           await this.timeout(TICK);
+          this.monster.states.isRunning = false;
           this.monster.transition = "none";
-          this.monster.states.isWalking = false;
-          this.monster.states.isRunning = true;
-          this.monster.transition = ".1s linear";
-          const finishedRun = await this.moveWithAABB(3);
+          const finishedAttack = await this.lightAttack();
 
-          if (finishedRun) {
+          if (finishedAttack) {
+            this.$emit("warrior-was-hit", this.monster.stats.attackDamage);
             await this.timeout(TICK);
-            this.monster.states.isRunning = false;
-            this.monster.transition = "none";
-            const finishedAttack = await this.lightAttack();
+            this.monster.states.isAttacking = false;
+            await this.timeout(TICK);
+            this.monster.transition = "0.1s linear";
+            await this.timeout(TICK);
+            this.monster.states.isJumping = true;
+            const finishedJumpingBack = await this.moveMonsterBack(2);
 
-            if (finishedAttack) {
-              this.$emit("warrior-was-hit", this.monster.stats.attackDamage);
+            if (finishedJumpingBack) {
               await this.timeout(TICK);
-              this.monster.states.isAttacking = false;
+              this.monster.transition = "none";
+              this.reset();
+              this.monster.states.isIdle = true;
+              this.$emit("finished-turn", "warrior");
               await this.timeout(TICK);
-              this.monster.transition = "0.1s linear";
-              await this.timeout(TICK);
-              this.monster.states.isJumping = true;
-              const finishedJumpingBack = await this.moveMonsterBack(2);
-
-              if (finishedJumpingBack) {
-                await this.timeout(TICK);
-                this.monster.transition = "none";
-                this.reset();
-                this.monster.states.isIdle = true;
-                this.$emit("finished-turn", "warrior");
-                await this.timeout(TICK);
-              }
             }
           }
         }

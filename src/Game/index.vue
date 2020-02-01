@@ -8,6 +8,8 @@
       :currentTurn="currentTurn"
       :wasHit="state.warrior.wasHit"
       :isDead="state.warrior.hp <= 0"
+      :resetGame="reset"
+      @game-was-reset="reset = false"
       @warrior-light-attack="state.warrior.isLightAttacking = false"
       @warrior-position-x="state.warrior.position.x = $event"
       @monster-was-hit="damageMonster($event)"
@@ -24,6 +26,8 @@
       :monsterCanAttack="monsterCanAttack"
       :wasHit="state.monster.wasHit"
       :isDead="state.monster.hp <= 0"
+      :resetGame="reset"
+      @game-was-reset="reset = false"
       @monster-light-attack="monsterCanAttack = false"
       @warrior-was-hit="damageWarrior($event)"
       @finished-turn="currentTurn = $event"
@@ -33,8 +37,10 @@
     <app-ui
       :currentTurn="currentTurn"
       :hp="state.warrior.hp"
+      :monsterHp="state.monster.hp"
       @warrior-healing="healWarrior"
       @warrior-light-attack="state.warrior.isLightAttacking = $event"
+      @reset-game="resetGame()"
     ></app-ui>
   </div>
 </template>
@@ -57,6 +63,7 @@ export default {
       windowWidth: window.innerWidth,
       currentTurn: "warrior",
       monsterCanAttack: false,
+      reset: false,
       state: {
         warrior: {
           hp: 100,
@@ -125,6 +132,13 @@ export default {
 
       this.currentTurn = "monster";
       this.monsterCanAttack = true;
+    },
+    resetGame() {
+      this.reset = true;
+      this.monsterCanAttack = false;
+      this.state.warrior.hp = 100;
+      this.state.monster.hp = 100;
+      this.currentTurn = "warrior";
     }
   }
 };

@@ -24,7 +24,15 @@ const TICK = 1000 / 15;
 
 export default {
   name: "warrior",
-  props: ["windowWidth", "actions", "AABB", "currentTurn", "wasHit", "isDead"],
+  props: [
+    "windowWidth",
+    "actions",
+    "AABB",
+    "currentTurn",
+    "wasHit",
+    "isDead",
+    "resetGame"
+  ],
   data() {
     return {
       collided: false,
@@ -57,6 +65,16 @@ export default {
       handler(newWidth, oldWidth) {
         if (newWidth !== oldWidth) {
           this.calculatePosition(newWidth);
+        }
+      }
+    },
+    resetGame: {
+      immediate: true,
+      handler(r) {
+        if (r) {
+          this.reset();
+          this.warrior.states.isIdle = true;
+          this.$emit('game-was-reset')
         }
       }
     }
@@ -132,6 +150,10 @@ export default {
       if (this.actions.warrior.isLightAttacking) {
         this.$emit("warrior-light-attack", false);
         this.doLightAttack();
+      }
+
+      if (this.reset) {
+        this.res;
       }
     },
     reset() {
