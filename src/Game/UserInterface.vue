@@ -59,6 +59,10 @@ export default {
       ) {
         this.$emit("warrior-healing");
         this.inAction = true;
+
+        setTimeout(() => {
+          this.inAction = false;
+        }, 1000);
       } else if (this.hp === 100) {
         this.showChooseDifferenct = true;
         setTimeout(() => {
