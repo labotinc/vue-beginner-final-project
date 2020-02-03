@@ -29,8 +29,7 @@ export default {
     height: 100vh;
     width: 100%;
     position: absolute;
-    background: url("../assets/world/woods-bg.png") no-repeat center center
-      fixed;
+    background: url("../assets/world/woods-bg.png") center center fixed;
     background-size: cover;
     z-index: 10;
   }
@@ -39,18 +38,17 @@ export default {
     height: 100vh;
     width: 100%;
     position: absolute;
-    background: url("../assets/world/woods-far-trees.png") no-repeat center
-      center fixed;
+    background: url("../assets/world/woods-far-trees.png") center center fixed;
     background-size: cover;
     z-index: 20;
+    animation: far-trees 4000s infinite;
   }
 
   .world-background-mid-trees {
     height: 100vh;
     width: 100%;
     position: absolute;
-    background: url("../assets/world/woods-mid-trees.png") no-repeat center
-      center fixed;
+    background: url("../assets/world/woods-mid-trees.png") center center fixed;
     background-size: cover;
     z-index: 30;
   }
@@ -59,10 +57,29 @@ export default {
     height: 100vh;
     width: 100%;
     position: absolute;
-    background: url("../assets/world/woods-close-trees.png") no-repeat center
-      center fixed;
+    background: url("../assets/world/woods-close-trees.png") center center fixed;
+    background-position-x: 155px;
     background-size: cover;
-    z-index: 40;
+    z-index: 50;
+    opacity: 0.8;
+    animation: close-trees 4000s infinite;
+
+
+    @media (min-width: 1360px) {
+      background-position-x: 510px;
+    }
+  }
+
+  @keyframes close-trees {
+    to {
+      background-position-x: 6000px;
+    }
+  }
+
+  @keyframes far-trees {
+    to {
+      background-position-x: -6000px;
+    }
   }
 }
 </style>

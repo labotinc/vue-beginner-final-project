@@ -1,21 +1,21 @@
 <template>
   <div
-    id="warrior"
-    class="app-warrior"
+    id="monster"
+    class="app-monster"
     :style="{
-      left: `${warrior.position.x}%`,
-      transition: warrior.transition
+      left: `${monster.position.x}%`,
+      transition: monster.transition
     }"
-    :class="warriorClasses"
+    :class="monsterClasses"
   >
     <div class="life-bar">
-      HP: {{ actions.warrior.hp }}
+      HP: {{ actions.monster.hp }}
       <div
         class="green-bar"
-        :style="{ width: `${actions.warrior.hp}px` }"
+        :style="{ width: `${actions.monster.hp}px` }"
       ></div>
     </div>
-    <div class="current-turn" v-if="currentTurn === 'warrior'"></div>
+    <div class="current-turn" v-if="currentTurn === 'monster'"></div>
   </div>
 </template>
 
@@ -23,12 +23,13 @@
 const TICK = 1000 / 15;
 
 export default {
-  name: "warrior",
+  name: "monster",
   props: [
     "windowWidth",
     "actions",
-    "AABB",
     "currentTurn",
+    "monsterCanAttack",
+    "AABB",
     "wasHit",
     "isDead",
     "resetGame"
@@ -36,9 +37,10 @@ export default {
   data() {
     return {
       collided: false,
-      warrior: {
+      monster: {
         stats: {
-          attackDamage: 10
+          hp: this.actions.monster.hp,
+          attackDamage: 30
         },
         states: {
           isIdle: true,
@@ -73,8 +75,8 @@ export default {
       handler(r) {
         if (r) {
           this.reset();
-          this.warrior.states.isIdle = true;
-          this.$emit('game-was-reset')
+          this.monster.states.isIdle = true;
+          this.$emit("game-was-reset");
         }
       }
     }
@@ -83,23 +85,23 @@ export default {
     this.calculatePosition(this.windowWidth);
 
     setTimeout(() => {
-      this.$emit("warrior-position-x", this.warrior.position.initialX);
+      this.$emit("monster-position-x", this.monster.position.initialX);
     }, 500);
 
     setInterval(this.gameLoop, TICK);
   },
   computed: {
-    warriorClasses() {
+    monsterClasses() {
       return {
-        "is-idle": this.warrior.states.isIdle,
-        "is-walking": this.warrior.states.isWalking,
-        "is-running": this.warrior.states.isRunning,
-        "is-attacking": this.warrior.states.isAttacking,
-        "is-attacking2": this.warrior.states.isAttacking2,
-        "is-jumping": this.warrior.states.isJumping,
-        "is-hit": this.warrior.states.isHit,
-        "is-dead": this.warrior.states.isDead,
-        dead: this.warrior.states.dead
+        "is-idle": this.monster.states.isIdle,
+        "is-walking": this.monster.states.isWalking,
+        "is-running": this.monster.states.isRunning,
+        "is-attacking": this.monster.states.isAttacking,
+        "is-attacking2": this.monster.states.isAttacking2,
+        "is-jumping": this.monster.states.isJumping,
+        "is-hit": this.monster.states.isHit,
+        "is-dead": this.monster.states.isDead,
+        dead: this.monster.states.dead
       };
     }
   },
@@ -109,15 +111,15 @@ export default {
     },
     calculatePosition(width) {
       if (width >= 320 && width < 360) {
-        this.setPosition(30);
+        this.setPosition(65);
       }
 
       if (width >= 360 && width < 410) {
-        this.setPosition(23);
+        this.setPosition(62);
       }
 
       if (width >= 410 && width < 480) {
-        this.setPosition(18);
+        this.setPosition(60);
       }
 
       if (width >= 480 && width < 768) {
@@ -125,103 +127,96 @@ export default {
       }
 
       if (width >= 768 && width < 1360) {
-        this.setPosition(10);
+        this.setPosition(70);
       }
 
       if (width >= 1360 && width < 1440) {
-        this.setPosition(35);
+        this.setPosition(65);
       }
 
-      if (width >= 1440) {
-        this.setPosition(32);
+      if (width >= 1440 && width < 1920) {
+        this.setPosition(71);
+      }
+
+      if (width >= 1920) {
+        this.setPosition(69);
       }
     },
     setPosition(position) {
-      this.warrior.position.x = position;
-      this.warrior.position.initialX = position;
+      this.monster.position.x = position;
+      this.monster.position.initialX = position;
     },
     gameLoop() {
       if (this.wasHit) {
         this.getHit();
       }
-      if (this.isDead && !this.warrior.states.dead) {
+      if (this.isDead && !this.monster.states.dead) {
         this.die();
       }
-      if (this.actions.warrior.isLightAttacking) {
-        this.$emit("warrior-light-attack", false);
-        this.doLightAttack();
-      }
-
-      if (this.reset) {
-        this.res;
+      if (!this.wasHit && !this.isDead && this.monsterCanAttack) {
+        if (this.actions.warrior.position.x > 0) {
+          this.$emit("monster-light-attack");
+          this.doLightAttack();
+        }
       }
     },
     reset() {
-      Object.keys(this.warrior.states).forEach(state => {
-        this.warrior.states[state] = false;
+      Object.keys(this.monster.states).forEach(state => {
+        this.monster.states[state] = false;
       });
     },
     async die() {
-      this.warrior.states.isIdle = false;
+      this.monster.states.isIdle = false;
       await this.timeout(TICK);
-      this.warrior.states.isDead = true;
+      this.monster.states.isDead = true;
       await this.timeout(800);
-      this.warrior.states.isDead = false;
-      this.warrior.states.dead = true;
+      this.monster.states.isDead = false;
+      this.monster.states.dead = true;
     },
     async getHit() {
-      this.warrior.states.isIdle = false;
+      this.monster.states.isIdle = false;
       await this.timeout(TICK);
-      this.warrior.states.isHit = true;
-      this.$emit("warrior-hit");
+      this.monster.states.isHit = true;
+      this.$emit("monster-hit");
       await this.timeout(800);
       this.reset();
-      this.warrior.states.isIdle = true;
+      this.monster.states.isIdle = true;
     },
     async doLightAttack() {
-      const walkDistance = this.actions.monster.position.x - 6;
+      const walkDistance = this.actions.warrior.position.x;
 
       if (walkDistance > 0) {
-        this.warrior.states.isIdle = false;
+        this.monster.states.isIdle = false;
         await this.timeout(TICK);
-        this.warrior.states.isWalking = true;
-        await this.timeout(TICK);
-        this.warrior.transition = ".1s linear";
-        const finishedWalk = await this.moveWarrior(0.5, walkDistance / 2 + 5);
+        this.monster.transition = "none";
+        this.monster.states.isWalking = false;
+        this.monster.states.isRunning = true;
+        this.monster.transition = ".1s linear";
+        const finishedRun = await this.moveWithAABB(3);
 
-        if (finishedWalk) {
+        if (finishedRun) {
           await this.timeout(TICK);
-          this.warrior.transition = "none";
-          this.warrior.states.isWalking = false;
-          this.warrior.states.isRunning = true;
-          this.warrior.transition = ".1s linear";
-          const finishedRun = await this.moveWithAABB(1.5);
+          this.monster.states.isRunning = false;
+          this.monster.transition = "none";
+          const finishedAttack = await this.lightAttack();
 
-          if (finishedRun) {
+          if (finishedAttack) {
+            this.$emit("warrior-was-hit", this.monster.stats.attackDamage);
             await this.timeout(TICK);
-            this.warrior.states.isRunning = false;
-            this.warrior.transition = "none";
-            const finishedAttack = await this.lightAttack();
+            this.monster.states.isAttacking = false;
+            await this.timeout(TICK);
+            this.monster.transition = "0.1s linear";
+            await this.timeout(TICK);
+            this.monster.states.isJumping = true;
+            const finishedJumpingBack = await this.moveMonsterBack(2);
 
-            if (finishedAttack) {
-              this.$emit("monster-was-hit", this.warrior.stats.attackDamage);
+            if (finishedJumpingBack) {
               await this.timeout(TICK);
-              this.warrior.states.isAttacking = false;
+              this.monster.transition = "none";
+              this.reset();
+              this.monster.states.isIdle = true;
+              this.$emit("finished-turn", "warrior");
               await this.timeout(TICK);
-              this.warrior.transition = "0.1s linear";
-              await this.timeout(TICK);
-              this.warrior.states.isJumping = true;
-              const finishedJumpingBack = await this.moveWarriorBack(2);
-
-              if (finishedJumpingBack) {
-                await this.timeout(TICK);
-                this.warrior.transition = "none";
-                this.reset();
-                this.warrior.states.isIdle = true;
-                this.$emit("finished-turn", "monster");
-                await this.timeout(TICK);
-                this.$emit("monster-can-attack", true);
-              }
             }
           }
         }
@@ -232,10 +227,10 @@ export default {
         let moveLoop = setInterval(() => {
           let collided = this.AABB();
 
-          this.warrior.position.x += speed;
+          this.monster.position.x -= speed;
           if (
             collided &&
-            this.warrior.position.x >= this.actions.monster.position.x - 4
+            this.monster.position.x <= this.actions.warrior.position.x + 10
           ) {
             clearInterval(moveLoop);
             resolve(true);
@@ -243,25 +238,12 @@ export default {
         }, TICK);
       });
     },
-    moveWarrior(speed, distance) {
+    moveMonster(speed, distance) {
       return new Promise((resolve, reject) => {
         let moveLoop = setInterval(() => {
-          this.warrior.position.x += speed;
+          this.monster.position.x -= speed;
 
-          if (this.warrior.position.x > distance) {
-            clearInterval(moveLoop);
-            resolve(true);
-          }
-        }, TICK);
-      });
-    },
-    moveWarriorBack(speed) {
-      return new Promise((resolve, reject) => {
-        let moveLoop = setInterval(() => {
-          this.warrior.position.x -= speed;
-
-          if (this.warrior.position.initialX > this.warrior.position.x) {
-            this.warrior.position.x = this.warrior.position.initialX;
+          if (this.monster.position.x < distance) {
             clearInterval(moveLoop);
             resolve(true);
           }
@@ -270,9 +252,22 @@ export default {
     },
     lightAttack() {
       return new Promise(async (resolve, reject) => {
-        this.warrior.states.isAttacking = true;
+        this.monster.states.isAttacking = true;
         await this.timeout(850);
         resolve(true);
+      });
+    },
+    moveMonsterBack(speed) {
+      return new Promise((resolve, reject) => {
+        let moveLoop = setInterval(() => {
+          this.monster.position.x += speed;
+
+          if (this.monster.position.initialX > this.monster.position.x) {
+            this.monster.position.x = this.monster.position.initialX;
+            clearInterval(moveLoop);
+            resolve(true);
+          }
+        }, TICK);
       });
     }
   }
@@ -335,9 +330,9 @@ $life-bar-red: red;
   }
 }
 
-.app-warrior {
+.app-monster {
   position: fixed;
-  background: url("../assets/warrior/warrior_idle.png") no-repeat;
+  background: url("../assets/monster/monster_idle.png") no-repeat;
   background-size: cover;
   background-position: 0 0;
   image-rendering: pixelated;
@@ -372,51 +367,51 @@ $life-bar-red: red;
   }
 
   &.is-idle {
-    background: url("../assets/warrior/warrior_idle.png") no-repeat;
+    background: url("../assets/monster/monster_idle.png") no-repeat;
     animation: is-idle 0.8s steps(3) infinite;
   }
 
   &.is-walking {
     animation: is-walking 0.8s steps(6) infinite;
-    background: url("../assets/warrior/warrior_walk.png") no-repeat;
+    background: url("../assets/monster/monster_walk.png") no-repeat;
   }
 
   &.is-running {
     animation: is-walking 0.8s steps(6) infinite;
-    background: url("../assets/warrior/warrior_run.png") no-repeat;
+    background: url("../assets/monster/monster_run.png") no-repeat;
   }
 
   &.is-attacking {
     width: 100px;
     height: 65px;
     animation: is-attacking 0.8s steps(6) infinite;
-    background: url("../assets/warrior/warrior_attack1.png") no-repeat;
+    background: url("../assets/monster/monster_attack1.png") no-repeat;
   }
 
   &.is-attacking2 {
     width: 100px;
     height: 65px;
     animation: is-attacking 0.8s steps(6) infinite;
-    background: url("../assets/warrior/warrior_attack2.png") no-repeat;
+    background: url("../assets/monster/monster_attack2.png") no-repeat;
   }
 
   &.is-jumping {
     animation: is-jumping 0.8s steps(5) infinite;
-    background: url("../assets/warrior/warrior_jump.png") no-repeat;
+    background: url("../assets/monster/monster_jump.png") no-repeat;
   }
 
   &.is-hit {
     animation: is-idle 0.8s steps(3) infinite;
-    background: url("../assets/warrior/warrior_hit.png") no-repeat;
+    background: url("../assets/monster/monster_hit.png") no-repeat;
   }
 
   &.is-dead {
-    animation: is-jumping 0.8s steps(5) infinite;
-    background: url("../assets/warrior/warrior_fall.png") no-repeat;
+    animation: is-dead 0.8s steps(4) infinite;
+    background: url("../assets/monster/monster_fall.png") no-repeat;
   }
 
   &.dead {
-    background: url("../assets/warrior/warrior_fall.png") no-repeat -200px 0;
+    background: url("../assets/monster/monster_fall.png") no-repeat 0 0;
     animation: none;
   }
 }
@@ -458,6 +453,16 @@ $life-bar-red: red;
 
   to {
     background-position: -250px 0;
+  }
+}
+
+@keyframes is-dead {
+  from {
+    background-position: -200px 0;
+  }
+
+  to {
+    background-position: 0px 0;
   }
 }
 </style>

@@ -1,7 +1,5 @@
 # vue-beginner-final-project
 
-> 
-
 ## Build Setup
 
 ``` bash
