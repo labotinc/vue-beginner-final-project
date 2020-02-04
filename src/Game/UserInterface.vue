@@ -1,24 +1,34 @@
 <template>
   <div class="app-ui">
-    <h1 class="current-turn">Current Turn: {{ currentTurn }}</h1>
-    <h2 class="not-your-turn" v-show="!canDoAction">Wait for your turn!</h2>
-    <h2 class="not-your-turn" v-show="showChooseDifferenct">
+    <!--
+      TODO: 5. a. The Template
+      TODO: 5. a. i. Render the currentTurn below
+    -->
+    <h1 class="current-turn">Current Turn: {{}}</h1>
+    <!-- TODO: 5. a. ii. Use v-show passing !canDoAction as a value -->
+    <h2 class="not-your-turn">Wait for your turn!</h2>
+    <!-- TODO: 5. a. iii. Use v-show passing showChooseDifferentAction as a value -->
+    <h2 class="not-your-turn">
       Choose a different Action!
     </h2>
-    <h2 class="end-game" v-if="hp <= 0">You died</h2>
-    <h2 class="end-game" v-if="monsterHp <= 0">You survived</h2>
-    <button
-      class="reset-game-btn"
-      v-if="hp <= 0 || monsterHp <= 0"
-      @click="$emit('reset-game')"
-    >
+    <!-- TODO: 5. a. iv. Use the v-if directive checking if hp <= 0 -->
+    <h2 class="end-game">You died</h2>
+    <!-- TODO: 5. a. v. Use the v-if directive checking if monsterHp <= 0 -->
+    <h2 class="end-game">You survived</h2>
+    <!--
+      TODO: 5. a. vi. Use the v-if directive checking if hp <= 0 or monsterHp <= 0
+      TODO: 5. a. vii. Listen to the click event and emit "reset-game" on click
+    -->
+    <button class="reset-game-btn">
       PLAY AGAIN
     </button>
     <div class="ui-action-btns">
-      <button class="ui-attack-btn" @click="lightAttack">
+      <!-- TODO: 5. a. vii. Listen to the click event and run the lightAttack method -->
+      <button class="ui-attack-btn">
         ATTACK
       </button>
-      <button class="ui-heal-btn" @click="heal">HEAL</button>
+      <!-- TODO: 5. a. viii. Listen to the click event and run the heal method -->
+      <button class="ui-heal-btn">HEAL</button>
     </div>
   </div>
 </template>
@@ -31,12 +41,12 @@ export default {
     return {
       inAction: false,
       canDoAction: true,
-      showChooseDifferenct: false
+      showChooseDifferentAction: false
     };
   },
   methods: {
     lightAttack() {
-      this.showChooseDifferenct = false;
+      this.showChooseDifferentAction = false;
       if (this.currentTurn === "warrior" && this.hp > 0 && !this.inAction) {
         this.$emit("warrior-light-attack", true);
         this.inAction = true;
@@ -64,9 +74,9 @@ export default {
           this.inAction = false;
         }, 1000);
       } else if (this.hp === 100) {
-        this.showChooseDifferenct = true;
+        this.showChooseDifferentAction = true;
         setTimeout(() => {
-          this.showChooseDifferenct = false;
+          this.showChooseDifferentAction = false;
         }, 1000);
       } else if (hp != 0 && monsterHp != 0 && !this.currentTurn === "warrior") {
         this.showNotYourTurn();

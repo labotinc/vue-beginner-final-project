@@ -1,21 +1,28 @@
 <template>
-  <div
-    id="monster"
-    class="app-monster"
-    :style="{
-      left: `${monster.position.x}%`,
-      transition: monster.transition
-    }"
-    :class="monsterClasses"
-  >
+  <!--  
+    TODO: 3. a. Bind dynamic styles to the app-monster div below
+    TODO: 3. a. i. Pass a "left" attribute with the value of monster.position.x 
+        Remember that this is a percentage, so you must also pass the % or it won't work
+        Hint: Use template literals
+    TODO: 3. a. ii. Pass a "transition" attribute with the value of monster.transition
+
+    TODO: 3. b. Bind dynamic classes to the app-monster div below
+    TODO: 3. b. i. The value binded to the :class must be a computed property named "monsterClasses"
+  -->
+  <div id="monster" class="app-monster" :style="{}">
     <div class="life-bar">
-      HP: {{ actions.monster.hp }}
-      <div
-        class="green-bar"
-        :style="{ width: `${actions.monster.hp}px` }"
-      ></div>
+      <!--
+        TODO: 3. c. The Life Bar div
+        TODO: 3. c. i. Render the actions.monster.hp attribute below after the "HP: "
+        TODO: 3. c. ii. Create a style binding with the property width with the value monster.hp
+            Remember that this is pixels, so you must also pass the "px" or it won't work
+            Hint: Use template literals
+      -->
+      HP: {{}}
+      <div class="green-bar"></div>
     </div>
-    <div class="current-turn" v-if="currentTurn === 'monster'"></div>
+    <!-- TODO: 3. c. iii. Use the v-if directive to check if the currentTurn is "monster" -->
+    <div class="current-turn"></div>
   </div>
 </template>
 
@@ -24,16 +31,8 @@ const TICK = 1000 / 15;
 
 export default {
   name: "monster",
-  props: [
-    "windowWidth",
-    "actions",
-    "currentTurn",
-    "monsterCanAttack",
-    "AABB",
-    "wasHit",
-    "isDead",
-    "resetGame"
-  ],
+  // TODO: 3. d. Receive Props
+  // TODO: 3. d. i. Receive the following props: windowWidth, actions, AABB, currentTurn, wasHit, isDead, resetGame, monsterCanAttack
   data() {
     return {
       collided: false,
