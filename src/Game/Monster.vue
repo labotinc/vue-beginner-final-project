@@ -9,7 +9,15 @@
     TODO: 3. b. Bind dynamic classes to the app-monster div below
     TODO: 3. b. i. The value binded to the :class must be a computed property named "monsterClasses"
   -->
-  <div id="monster" class="app-monster" :style="{}">
+  <div
+    id="monster"
+    class="app-monster"
+    :style="{
+      left: `${monster.position.x}%`,
+      transition: monster.transition
+    }"
+    :class="monsterClasses"
+  >
     <div class="life-bar">
       <!--
         TODO: 3. c. The Life Bar div
@@ -18,11 +26,14 @@
             Remember that this is pixels, so you must also pass the "px" or it won't work
             Hint: Use template literals
       -->
-      HP: {{}}
-      <div class="green-bar"></div>
+      HP: {{ actions.monster.hp }}
+      <div
+        class="green-bar"
+        :style="{ width: `${actions.monster.hp}px` }"
+      ></div>
     </div>
     <!-- TODO: 3. c. iii. Use the v-if directive to check if the currentTurn is "monster" -->
-    <div class="current-turn"></div>
+    <div class="current-turn" v-if="currentTurn === 'monster'"></div>
   </div>
 </template>
 
@@ -33,6 +44,16 @@ export default {
   name: "monster",
   // TODO: 3. d. Receive Props
   // TODO: 3. d. i. Receive the following props: windowWidth, actions, AABB, currentTurn, wasHit, isDead, resetGame, monsterCanAttack
+  props: [
+    "windowWidth",
+    "actions",
+    "AABB",
+    "currentTurn",
+    "wasHit",
+    "isDead",
+    "resetGame",
+    "monsterCanAttack"
+  ],
   data() {
     return {
       collided: false,
