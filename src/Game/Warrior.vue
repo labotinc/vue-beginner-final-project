@@ -12,7 +12,11 @@
   <div
     id="warrior"
     class="app-warrior"
-    :style="{}"
+    :style="{
+      left: `${warrior.position.x}%`,
+      transition: warrior.transition
+    }"
+    :class="warriorClasses"
   >
     <div class="life-bar">
       <!--
@@ -22,13 +26,14 @@
             Remember that this is pixels, so you must also pass the "px" or it won't work
             Hint: Use template literals
       -->
-      HP: {{}}
+      HP: {{ actions.warrior.hp }}
       <div
         class="green-bar"
+        :style="{ width: `${actions.warrior.hp}px` }"
       ></div>
     </div>
     <!-- TODO: 3. c. iii. Use the v-if directive to check if the currentTurn is "warrior" -->
-    <div class="current-turn"></div>
+    <div class="current-turn" v-if="currentTurn === 'warrior'"></div>
   </div>
 </template>
 
@@ -39,6 +44,15 @@ export default {
   name: "warrior",
   // TODO: 3. d. Receive Props
   // TODO: 3. d. i. Receive the following props: windowWidth, actions, AABB, currentTurn, wasHit, isDead, resetGame
+  props: [
+    "windowWidth",
+    "actions",
+    "AABB",
+    "currentTurn",
+    "wasHit",
+    "isDead",
+    "resetGame"
+  ],
   data() {
     return {
       collided: false,
@@ -80,7 +94,7 @@ export default {
         if (r) {
           this.reset();
           this.warrior.states.isIdle = true;
-          this.$emit('game-was-reset')
+          this.$emit("game-was-reset");
         }
       }
     }
