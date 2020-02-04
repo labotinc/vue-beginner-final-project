@@ -4,31 +4,35 @@
       TODO: 5. a. The Template
       TODO: 5. a. i. Render the currentTurn below
     -->
-    <h1 class="current-turn">Current Turn: {{}}</h1>
+    <h1 class="current-turn">Current Turn: {{ currentTurn }}</h1>
     <!-- TODO: 5. a. ii. Use v-show passing !canDoAction as a value -->
-    <h2 class="not-your-turn">Wait for your turn!</h2>
+    <h2 class="not-your-turn" v-show="!canDoAction">Wait for your turn!</h2>
     <!-- TODO: 5. a. iii. Use v-show passing showChooseDifferentAction as a value -->
-    <h2 class="not-your-turn">
+    <h2 class="not-your-turn" v-show="showChooseDifferentAction">
       Choose a different Action!
     </h2>
     <!-- TODO: 5. a. iv. Use the v-if directive checking if hp <= 0 -->
-    <h2 class="end-game">You died</h2>
+    <h2 class="end-game" v-if="hp <= 0">You died</h2>
     <!-- TODO: 5. a. v. Use the v-if directive checking if monsterHp <= 0 -->
-    <h2 class="end-game">You survived</h2>
+    <h2 class="end-game" v-if="monsterHp <= 0">You survived</h2>
     <!--
       TODO: 5. a. vi. Use the v-if directive checking if hp <= 0 or monsterHp <= 0
       TODO: 5. a. vii. Listen to the click event and emit "reset-game" on click
     -->
-    <button class="reset-game-btn">
+    <button
+      class="reset-game-btn"
+      v-if="hp <= 0 || monsterHp <= 0"
+      @click="$emit('reset-game')"
+    >
       PLAY AGAIN
     </button>
     <div class="ui-action-btns">
       <!-- TODO: 5. a. vii. Listen to the click event and run the lightAttack method -->
-      <button class="ui-attack-btn">
+      <button class="ui-attack-btn" @click="lightAttack">
         ATTACK
       </button>
       <!-- TODO: 5. a. viii. Listen to the click event and run the heal method -->
-      <button class="ui-heal-btn">HEAL</button>
+      <button class="ui-heal-btn" @click="heal">HEAL</button>
     </div>
   </div>
 </template>
