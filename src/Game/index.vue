@@ -1,7 +1,7 @@
 <template>
   <div class="app-game">
     <app-world></app-world>
-    
+
     <app-warrior
       :windowWidth="windowWidth"
       :actions="state"
@@ -88,35 +88,35 @@ export default {
   },
   methods: {
     damageMonster(damage) {
-      // TODO: 2. a. Implement damageMonster method
-      // TODO: 2. a. i. Set monster.wasHit = true
-      // TODO: 2. a. ii. Decrease the monster hp to -= the damage
-      // TODO: 2. a. iii. Check if state.monster < 0
-      // TODO: 2. a. iv. If state.monster < 0 then set monster.hp = 0
+      this.state.monster.wasHit = true;
+      this.state.monster.hp -= damage;
+      if (this.state.monster.hp < 0) {
+        this.state.monster.hp = 0;
+      }
     },
     damageWarrior(damage) {
-      // TODO: 2. b. Implement damageWarrior method
-      // TODO: 2. b. i. Set warrior.wasHit = true
-      // TODO: 2. b. ii. Decrease the warrior hp to -= the damage
-      // TODO: 2. b. iii. Check if state.warrior < 0
-      // TODO: 2. b. iv. If state.warrior < 0 then set warrior.hp = 0
+      this.state.warrior.wasHit = true;
+      this.state.warrior.hp -= damage;
+      if (this.state.warrior.hp < 0) {
+        this.state.warrior.hp = 0;
+      }
     },
     healWarrior() {
-      // TODO: 2. c. Implement the healWarrior method
-      // TODO: 2. c. i. Check if warrior.hp < 100
-      // TODO: 2. c. ii. If warrior.hp < 100 then set warrior.hp += 40
-      // TODO: 2. c. iii. Check if warrior.hp >= 100
-      // TODO: 2. c. iv. If warrior.hp >= 100 then set warrior.hp = 100
-      // TODO: 2. c. v. Set currentTurn = "monster"
-      // TODO: 2. c. vi. Set monsterCanAttack = true
+      if (this.state.warrior.hp < 100) {
+        this.state.warrior.hp += 40;
+      }
+      if (this.state.warrior.hp >= 100) {
+        this.state.warrior.hp = 100;
+      }
+      this.currentTurn = "monster";
+      this.monsterCanAttack = true;
     },
     resetGame() {
-      // TODO: 2. d. Implement the resetGame method
-      // TODO: 2. d. i. Set reset = true
-      // TODO: 2. d. ii. Set monsterCanAttack = false
-      // TODO: 2. d. iii. Set warrior.hp = 100
-      // TODO: 2. d. iv. Set monster.hp = 100
-      // TODO: 2. d. v. Set currentTurn = "warrior"
+      this.reset = true;
+      this.monsterCanAttack = false;
+      this.state.warrior.hp = 100;
+      this.state.monster.hp = 100;
+      this.currentTurn = "warrior";
     },
     AABB() {
       const warrior = document.getElementById("warrior");
